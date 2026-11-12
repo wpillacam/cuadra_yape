@@ -12,9 +12,10 @@ const withPWA = require('next-pwa')({
 
 module.exports = withPWA({
   reactStrictMode: true,
+  images: { unoptimized: true },
   experimental: { outputFileTracingRoot: path.join(__dirname, '..') },
   async rewrites() {
-    if (process.env.VERCEL === '1') return [];
+    if (process.env.VERCEL === '1' || process.env.CUADRA_EMBEDDED_API === '1') return [];
     return {
       beforeFiles: [{ source: '/api/:path*', destination: (process.env.API_ORIGIN || 'http://127.0.0.1:4000') + '/api/:path*' }],
     };

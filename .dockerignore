@@ -1,0 +1,12 @@
+.git
+.vercel
+**/node_modules
+**/.next
+**/.env
+**/.env.*
+**/*.db
+**/*.db-journal
+**/*.db-wal
+**/*.db-shm
+frontend/public/sw.js*
+frontend/public/workbox-*.js*

@@ -85,6 +85,13 @@ Consulta la [guía de conexión de Prisma con Supabase](https://supabase.com/doc
 
 El desarrollo local usa el schema de SQLite. Las migraciones de PostgreSQL están en `backend/prisma/postgresql`. El despliegue crea sus tablas en PostgreSQL. Si necesitas conservar ventas de una instalación local previa, hay que transferir los registros de ambas tablas, conservando el campo `caja` y los identificadores. El navegador trata la URL local y la URL de producción como sitios independientes.
 
+## Desplegar en Railway con Supabase
+
+1. Crea un servicio conectado a la rama `main` de GitHub. Usa la raíz del repositorio para que Railway encuentre el `Dockerfile`. Un solo servicio publica la PWA y la API.
+2. Configura en **Variables** las dos conexiones privadas de Supabase descritas arriba. Usa el **Transaction pooler** para `POSTGRES_PRISMA_URL` y el **Session pooler** para `POSTGRES_URL_NON_POOLING`. Ambas deben apuntar al mismo schema `cuadra_yape`.
+3. En **Settings → Deploy**, configura `npm run db:postgres:migrate -w backend` como **Pre-deploy command** y `/` como **Healthcheck Path**. La imagen se compila sin acceso a la base y Railway aplica las migraciones antes de arrancar la app.
+4. En **Networking → Public Networking**, genera un dominio HTTPS. Abre el dominio y prueba una venta desde el celular.
+
 ## Datos y alcance
 
 - Cada instalación funciona como una caja independiente. La app usa su historial local y envía los registros pendientes con la app abierta y desbloqueada. El servidor conserva los datos sincronizados. Esta versión carece de restauración automática en otro teléfono. Al borrar los datos del sitio se pierden el PIN, el identificador de caja y las ventas pendientes.
