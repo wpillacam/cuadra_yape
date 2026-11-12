@@ -1,3 +1,4 @@
+const path = require('node:path');
 const withPWA = require('next-pwa')({
   dest: 'public',
   disable: process.env.NODE_ENV === 'development',
@@ -11,7 +12,11 @@ const withPWA = require('next-pwa')({
 
 module.exports = withPWA({
   reactStrictMode: true,
+  experimental: { outputFileTracingRoot: path.join(__dirname, '..') },
   async rewrites() {
-    return [{ source: '/api/:path*', destination: (process.env.API_ORIGIN || 'http://127.0.0.1:4000') + '/api/:path*' }];
+    if (process.env.VERCEL === '1') return [];
+    return {
+      beforeFiles: [{ source: '/api/:path*', destination: (process.env.API_ORIGIN || 'http://127.0.0.1:4000') + '/api/:path*' }],
+    };
   },
 });

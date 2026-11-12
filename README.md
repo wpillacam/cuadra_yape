@@ -74,10 +74,20 @@ Todas las rutas reciben `Authorization: Bearer <token>`. El cliente genera y con
 
 `:dia` usa el formato `AAAA-MM-DD`. Los reintentos conservan la venta original por UUID y el primer cierre por día. Los totales se calculan con todas las ventas registradas para la fecha, incluidas las que se sincronizan después del cierre.
 
+## Desplegar en Vercel con Supabase
+
+1. Importa el repositorio desde GitHub y selecciona `main` como rama de producción. En **Root Directory**, elige `frontend` y activa **Include source files outside of the Root Directory** para incluir el backend y los archivos del workspace.
+2. En Supabase, abre **Connect** en un proyecto PostgreSQL. Copia la URL **Transaction pooler** (puerto 6543) a `POSTGRES_PRISMA_URL` en Vercel. Añade los parámetros `pgbouncer=true`, `sslmode=require` y `schema=cuadra_yape`.
+3. Copia la URL **Session pooler** (puerto 5432) a `POSTGRES_URL_NON_POOLING` para que Prisma aplique las migraciones. Añade `sslmode=require` y `schema=cuadra_yape`. Mantén el schema `cuadra_yape` fuera de los schemas expuestos por la Data API de Supabase. Si habilitas despliegues Preview, asigna una base separada a ese entorno.
+4. Despliega. El comando definido en `frontend/vercel.json` genera el cliente Prisma de PostgreSQL y aplica sus migraciones antes de compilar Next.js. La API Express se sirve en `/api` en el mismo dominio. Ambas URL son variables privadas del servidor.
+
+Consulta la [guía de conexión de Prisma con Supabase](https://supabase.com/docs/guides/database/prisma).
+
+El desarrollo local usa el schema de SQLite. Las migraciones de PostgreSQL están en `backend/prisma/postgresql`. El despliegue crea sus tablas en PostgreSQL. Si necesitas conservar ventas de una instalación local previa, hay que transferir los registros de ambas tablas, conservando el campo `caja` y los identificadores. El navegador trata la URL local y la URL de producción como sitios independientes.
+
 ## Datos y alcance
 
 - Cada instalación funciona como una caja independiente. La app usa su historial local y envía los registros pendientes con la app abierta y desbloqueada. El servidor conserva los datos sincronizados. Esta versión carece de restauración automática en otro teléfono. Al borrar los datos del sitio se pierden el PIN, el identificador de caja y las ventas pendientes.
 - El PIN bloquea la interfaz al abrir o recargar la app y mediante **Bloquear**. IndexedDB conserva las ventas y fotos sin cifrado adicional. WhatsApp requiere conexión para enviar el resumen.
-- Para migrar a PostgreSQL, conserva la base SQLite, cambia el proveedor del schema a `postgresql` y genera un historial de migraciones nuevo para PostgreSQL. Copia después ambas tablas, conservando los identificadores y el campo `caja`, y valida los conteos y totales antes del cambio de servidor.
 
 Referencias del stack: [next-pwa](https://github.com/shadowwalker/next-pwa) y [Prisma Migrate](https://www.prisma.io/docs/orm/v6/prisma-cli-reference).

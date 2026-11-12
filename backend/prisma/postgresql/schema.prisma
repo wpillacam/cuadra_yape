@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Venta {
+  caja             String
+  id               String
+  dia              String
+  fecha            DateTime
+  metodo           String
+  montoCentimos    Int
+  descripcion      String
+  nota             String
+  foto             Bytes?
+
+  @@id([caja, id])
+  @@index([caja, dia, fecha])
+  @@map("ventas")
+}
+
+model CierreDia {
+  caja      String
+  dia       String
+  cerradoEn DateTime
+
+  @@id([caja, dia])
+  @@map("cierre_dia")
+}
