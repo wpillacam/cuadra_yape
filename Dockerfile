@@ -16,4 +16,4 @@ RUN npm run db:postgres:generate -w backend && npm run build
 
 ENV NODE_ENV=production
 USER node
-CMD ["npm", "run", "start", "-w", "frontend"]
+CMD ["sh", "-c", "npm run db:postgres:migrate -w backend && exec node node_modules/next/dist/bin/next start frontend"]

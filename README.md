@@ -89,7 +89,7 @@ El desarrollo local usa el schema de SQLite. Las migraciones de PostgreSQL está
 
 1. Crea un servicio conectado a la rama `main` de GitHub. Usa la raíz del repositorio para que Railway encuentre el `Dockerfile`. Un solo servicio publica la PWA y la API.
 2. Configura en **Variables** las dos conexiones privadas de Supabase descritas arriba. Usa el **Transaction pooler** para `POSTGRES_PRISMA_URL` y el **Session pooler** para `POSTGRES_URL_NON_POOLING`. Ambas deben apuntar al mismo schema `cuadra_yape`.
-3. En **Settings → Deploy**, configura `npm run db:postgres:migrate -w backend` como **Pre-deploy command** y `/` como **Healthcheck Path**. La imagen se compila sin acceso a la base y Railway aplica las migraciones antes de arrancar la app.
+3. En **Settings → Deploy**, usa `/` como **Healthcheck Path**. La imagen se compila sin acceso a la base. Al arrancar, el contenedor aplica las migraciones y solo entonces inicia la app.
 4. En **Networking → Public Networking**, genera un dominio HTTPS. Abre el dominio y prueba una venta desde el celular.
 
 ## Datos y alcance
