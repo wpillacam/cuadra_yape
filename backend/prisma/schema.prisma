@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Venta {
+  caja             String
+  id               String
+  dia              String
+  fecha            DateTime
+  metodo           String
+  montoCentimos    Int
+  descripcion      String
+  nota             String
+  foto             Bytes?
+
+  @@id([caja, id])
+  @@index([caja, dia, fecha])
+  @@map("ventas")
+}
+
+model CierreDia {
+  caja      String
+  dia       String
+  cerradoEn DateTime
+
+  @@id([caja, dia])
+  @@map("cierre_dia")
+}

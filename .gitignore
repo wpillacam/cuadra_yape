@@ -1,0 +1,21 @@
+# Dependencias y compilación
+node_modules/
+.next/
+out/
+coverage/
+npm-debug.log*
+
+# Configuración local
+.env
+.env.*
+!.env.example
+
+# SQLite local y archivos auxiliares
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Service worker generado por next-pwa
+frontend/public/sw.js*
+frontend/public/workbox-*.js*

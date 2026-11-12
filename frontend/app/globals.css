@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply bg-white text-black text-lg leading-snug; }
+  button, a, input { touch-action: manipulation; }
+  button:focus-visible, a:focus-visible, input:focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-yape;
+  }
+}
+
+@layer components {
+  .action {
+    @apply inline-flex min-h-[60px] items-center justify-center rounded-xl px-4 py-2 text-center text-lg font-bold disabled:opacity-50;
+  }
+  .primary { @apply action bg-yape text-white; }
+  .secondary { @apply action bg-zinc-100 text-black; }
+  .field { @apply min-h-[60px] w-full min-w-0 rounded-xl border border-zinc-400 bg-white px-3 text-lg; }
+  .panel { @apply rounded-2xl border border-zinc-200 bg-zinc-50 p-4; }
+  .screen { @apply mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-4 py-4; }
+  .heading { @apply text-3xl font-extrabold leading-tight; }
+}
+
+.money { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }

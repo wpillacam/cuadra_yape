@@ -1,0 +1,12 @@
+{
+  "name": "backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:setup": "prisma generate && prisma migrate deploy",
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": { "@prisma/client": "6.19.3", "dotenv": "^16.6.1", "express": "^5.1.0" },
+  "devDependencies": { "prisma": "6.19.3" }
+}
