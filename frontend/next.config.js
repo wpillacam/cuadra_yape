@@ -5,7 +5,17 @@ const withPWA = require('next-pwa')({
   register: false,
   dynamicStartUrl: false,
   skipWaiting: true,
-  runtimeCaching: [],
+  runtimeCaching: [{
+    urlPattern: ({ url, request, sameOrigin }) =>
+      sameOrigin && request.mode === 'navigate' && url.pathname === '/negocio',
+    handler: 'NetworkFirst',
+    options: {
+      cacheName: 'cuadra-negocio',
+      matchOptions: { ignoreSearch: true },
+      expiration: { maxEntries: 3 },
+      networkTimeoutSeconds: 3,
+    },
+  }],
   // The App Router build manifest is server-only and would fail precaching.
   buildExcludes: [/app-build-manifest\.json$/],
 });

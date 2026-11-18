@@ -1,0 +1,492 @@
+.cy-auth,.cy-dashboard {
+  color: #edf5ff;
+  font-family: Inter,"Segoe UI",system-ui,sans-serif;
+  font-size: 16px;
+}
+
+.cy-auth {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 48px 20px;
+}
+
+.cy-login {
+  width: min(100%,490px);
+}
+
+.cy-login-heading {
+  padding: 0 22px 26px;
+}
+
+.cy-login-heading .brand-logo {
+  max-width: 200px;
+  margin-bottom: 18px;
+}
+
+.cy-login-heading h1 {
+  font-size: clamp(32px,6vw,44px);
+  font-weight: 750;
+  letter-spacing: -.035em;
+}
+
+.cy-login-heading p {
+  color: #c0d2e5;
+  font-size: 20px;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+.cy-card,.cy-auth-card {
+  border: 1px solid #aecfe366;
+  border-radius: 18px;
+  background: linear-gradient(125deg,#a3edeb20,#b6a0dd19);
+  box-shadow: inset 0 1px 1px #e3faff22,0 14px 35px #010b2429;
+  backdrop-filter: blur(18px);
+}
+
+.cy-auth-card {
+  display: grid;
+  gap: 18px;
+  padding: clamp(24px,5vw,34px);
+}
+
+.cy-dashboard {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 212px minmax(0,1fr);
+}
+
+.cy-sidebar {
+  padding: 24px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #07132ed9;
+  border-right: 1px solid #98c4e333;
+}
+
+.cy-sidebar .brand-logo {
+  margin: 0 auto 22px;
+  width: 175px;
+}
+
+.cy-sidebar a,.cy-logout {
+  padding: 11px 14px;
+  border-radius: 10px;
+  text-align: left;
+  color: #c6d5e8;
+}
+
+.cy-sidebar .cy-current {
+  color: white;
+  background: linear-gradient(120deg,#9ad8f633,#a5d6f21a);
+  border: 1px solid #beddfb88;
+  box-shadow: inset 0 1px 4px #d0efff33;
+}
+
+.cy-logout {
+  margin-top: auto;
+}
+
+.cy-main {
+  width: 100%;
+  max-width: 1420px;
+  margin: 0 auto;
+  padding: clamp(18px,4vw,54px);
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  min-height: 100dvh;
+}
+
+.cy-banner {
+  min-height: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 4px 20px 20px;
+}
+
+.cy-banner h1 {
+  font-size: 36px;
+  font-weight: 750;
+  letter-spacing: -.03em;
+}
+
+.cy-banner p,.cy-main p {
+  color: #c6d5e6;
+}
+
+.cy-banner p {
+  margin-top: 4px;
+}
+
+.cy-main h2 {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+.cy-metrics {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 14px;
+}
+
+.cy-stat {
+  display: grid;
+  gap: 5px;
+  padding: 20px 24px;
+}
+
+.cy-stat span {
+  color: #d0e0ed;
+}
+
+.cy-stat strong {
+  font-size: 30px;
+  line-height: 1.1;
+  color: white;
+  font-variant-numeric: tabular-nums;
+}
+
+.cy-stat:nth-child(2) {
+  background: linear-gradient(125deg,#3fc6aa25,#a0e8dc10);
+}
+
+.cy-stat:nth-child(3) {
+  background: linear-gradient(125deg,#d7af7224,#947a9b15);
+}
+
+.cy-directory,.cy-form-card,.cy-credentials {
+  min-width: 0;
+  padding: 20px;
+}
+
+.cy-form-card {
+  border-color: #b9e7ed88;
+}
+
+.cy-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.cy-form-grid > div {
+  display: contents;
+}
+
+.cy-group-title {
+  grid-column: 1 / -1;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+  color: #effbff;
+}
+
+.cy-auth label,.cy-form-grid label {
+  display: grid;
+  gap: 6px;
+  font-weight: 500;
+  color: #dae7f5;
+  min-width: 0;
+}
+
+.cy-auth input,.cy-main input,.cy-main select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid #94b2d266;
+  padding: 10px 12px;
+  background: #091a303d;
+  color: #eef7ff;
+  color-scheme: dark;
+}
+
+.cy-auth input {
+  min-height: 60px;
+  font-size: 20px;
+}
+
+.cy-auth input::placeholder,.cy-main input::placeholder {
+  color: #a6bad0;
+  opacity: 1;
+}
+
+.cy-main input[readonly] {
+  background: #05112966;
+  color: #b1c4dc;
+}
+
+.cy-main select option {
+  background: #14213d;
+  color: #eff7ff;
+}
+
+.cy-actions,.cy-toolbar,.cy-filters,.cy-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cy-actions {
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.cy-toolbar {
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.cy-filters input {
+  width: 250px;
+  max-width: 100%;
+}
+
+.cy-filters select {
+  width: auto;
+}
+
+.cy-primary,.cy-secondary,.cy-new {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 650;
+}
+
+.cy-primary {
+  color: white;
+  background: linear-gradient(125deg,#473a9c,#302075);
+  border: 1px solid #877ce755;
+  box-shadow: 0 5px 18px #37288955;
+}
+
+.cy-secondary {
+  color: #d2e0f6;
+  background: #a8d5fa0d;
+  border: 1px solid #a4c6e33d;
+}
+
+.cy-new {
+  color: white;
+  background: linear-gradient(120deg,#accfed44,#64b6d92a);
+  border: 1px solid #d2edffc0;
+  box-shadow: 0 0 17px #69c2f34d,inset 0 0 10px #d8f6ff3d;
+}
+
+.cy-primary:hover {
+  filter: brightness(1.17);
+}
+
+.cy-secondary:hover,.cy-new:hover,.cy-sidebar a:hover,.cy-logout:hover {
+  background-color: #b1d4ff18;
+}
+
+.cy-dashboard button:disabled,.cy-auth button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.cy-table-scroll {
+  overflow-x: auto;
+}
+
+.cy-directory table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.cy-directory th,.cy-directory td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #90bad52e;
+}
+
+.cy-directory th {
+  background: #adc7e010;
+  color: #d5e4f4;
+  font-size: 14px;
+}
+
+.cy-directory td span {
+  display: block;
+  font-size: 14px;
+  color: #b5c9df;
+  margin-top: 4px;
+}
+
+.cy-directory td .cy-status {
+  display: inline-block;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid;
+  font-weight: 600;
+}
+
+.cy-status.active {
+  background: #38b99d20;
+  color: #9ff4d5;
+  border-color: #56cfac55;
+}
+
+.cy-status.upcoming {
+  background: #409be520;
+  color: #b8e3ff;
+  border-color: #74b5e555;
+}
+
+.cy-status.expired {
+  background: #da9c4820;
+  color: #f4d5a0;
+  border-color: #dbb56b55;
+}
+
+.cy-empty {
+  text-align: center;
+  padding: 34px 16px;
+  border: 1px dashed #91b7d64d;
+  border-radius: 12px;
+  background: #9fd5e808;
+}
+
+.cy-empty p,.cy-form-card p,.cy-credentials p {
+  margin-top: 7px;
+}
+
+.cy-credentials dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+  margin: 14px 0;
+}
+
+.cy-credentials dt {
+  font-weight: 700;
+}
+
+.cy-credentials dd {
+  overflow-wrap: anywhere;
+}
+
+.cy-auth a,.cy-credentials a {
+  color: #c1e4ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cy-auth-card > a {
+  text-align: center;
+}
+
+.cy-password {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.cy-password input {
+  padding-right: 82px;
+}
+
+.cy-reveal {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  min-width: 68px;
+  border-radius: 8px;
+  color: #d3e8ff;
+  background: #bddcff12;
+  font-size: 15px;
+}
+
+.cy-auth .cy-primary {
+  min-height: 60px;
+  font-size: 20px;
+}
+
+.cy-auth .cy-pin-help {
+  font-size: 14px;
+  margin-top: -10px;
+  color: #b9cde1;
+}
+
+.cy-auth .cy-error,.cy-main .cy-error {
+  padding: 10px 12px;
+  border: 1px solid #ffada54d;
+  border-radius: 9px;
+  background: #a935452e;
+  color: #ffe0dd;
+}
+
+.cy-auth :focus-visible,.cy-dashboard :focus-visible {
+  outline: 2px solid #a6dfff;
+  outline-offset: 3px;
+}
+
+@media(max-width:1000px) {
+  .cy-dashboard {
+    grid-template-columns: 180px minmax(0,1fr);
+  }
+  .cy-form-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+
+@media(max-width:670px) {
+  .cy-dashboard {
+    display: block;
+  }
+  .cy-sidebar {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px;
+    border-bottom: 1px solid #98c4e333;
+  }
+  .cy-sidebar .brand-logo {
+    width: 150px;
+    margin: 0 8px 0 0;
+  }
+  .cy-logout {
+    margin-top: 0;
+  }
+  .cy-main {
+    padding: 18px 14px;
+  }
+  .cy-banner {
+    padding: 6px 0 14px;
+    flex-wrap: wrap;
+  }
+  .cy-metrics {
+    gap: 8px;
+  }
+  .cy-stat {
+    padding: 14px 10px;
+  }
+  .cy-stat span {
+    font-size: 13px;
+  }
+  .cy-stat strong {
+    font-size: 26px;
+  }
+  .cy-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .cy-filters,.cy-filters input,.cy-filters select {
+    width: 100%;
+  }
+  .cy-auth {
+    padding: 28px 16px;
+  }
+}

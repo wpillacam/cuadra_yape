@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Brand from './Brand';
+import ButtonIcon from './ButtonIcon';
 import { centsFrom, createProfile, dayOf, money, readLedger, readProfile, saveClose,
   saveSale, syncLedger, timeOf, totals, verifyPin, voucher } from '../lib/ledger';
 
@@ -8,7 +10,7 @@ const labels = { YAPE: 'Yape', EFECTIVO: 'Efectivo' };
 const shortDate = new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 const dayLabel = day => shortDate.format(new Date(day + 'T00:00:00Z')).replace('.', '');
 
-function Pin({ profile, onUnlock }) {
+function Pin({ profile, onUnlock, business }) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -40,10 +42,7 @@ function Pin({ profile, onUnlock }) {
 
   return (
     <main className="screen justify-center">
-      <div className="mb-2 flex items-center gap-3 font-extrabold text-yape">
-        <img src="/icon-192.png" alt="" width="52" height="52" />
-        Cuadra Yape
-      </div>
+      <Brand />
       <h1 className="heading">{profile ? 'Ingresa tu PIN' : 'Crea tu PIN'}</h1>
       <form className="grid gap-4" onSubmit={enter}>
         <label className="grid gap-2 font-semibold">
@@ -57,8 +56,21 @@ function Pin({ profile, onUnlock }) {
           {profile ? 'ABRIR CAJA' : 'CREAR PIN'}
         </button>
       </form>
+      <a className="action text-yape" href={business ? '/negocio' : businessAccessUrl()}>
+        {business ? 'Cambiar de negocio o clave' : 'Ingresar a mi negocio'}
+      </a>
     </main>
   );
+}
+
+function businessAccessUrl() {
+  try {
+    const last = localStorage.getItem('cuadra-negocio');
+    if (/^[a-f0-9-]{36}$/.test(last || '')) return '/negocio?caja=' + last;
+  } catch {
+    // El enlace básico sigue disponible si el navegador restringe localStorage.
+  }
+  return '/negocio';
 }
 
 function Sales({ sales, showDate = false }) {
@@ -84,19 +96,33 @@ function Sales({ sales, showDate = false }) {
   );
 }
 
-function Today({ sales, onRegister }) {
+function Today({ sales, onRegister, amountsVisible, onToggleAmounts }) {
   const { yape, efectivo, total } = totals(sales);
+  const displayAmount = amount => amountsVisible ? money(amount) : 'S/ ••••';
   return (
     <>
-      <h1 className="money rounded-2xl bg-[#f5ecf7] p-4 text-[clamp(1.85rem,8vw,2.75rem)] font-black text-yape">
-        HOY: {money(total)}
-      </h1>
+      <div className="total-today flex items-center justify-between gap-2">
+        <h1 className="money min-w-0 text-[clamp(1.85rem,8vw,2.75rem)] font-black">
+          HOY: {displayAmount(total)}
+        </h1>
+        <button type="button" onClick={onToggleAmounts}
+          className="flex min-h-[60px] min-w-[60px] shrink-0 items-center justify-center rounded-xl border border-white/30 bg-white/10 hover:bg-white/20"
+          aria-label={amountsVisible ? 'Ocultar montos de hoy' : 'Mostrar montos de hoy'}
+          aria-pressed={amountsVisible}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+            <circle cx="12" cy="12" r="3" />
+            {!amountsVisible && <path d="m3 3 18 18" />}
+          </svg>
+        </button>
+      </div>
       <div className="grid grid-cols-2 gap-3">
-        <div className="panel"><p>Yape</p><strong className="money text-2xl">{money(yape)}</strong></div>
-        <div className="panel"><p>Efectivo</p><strong className="money text-2xl">{money(efectivo)}</strong></div>
+        <div className="panel"><p>Yape</p><strong className="money text-2xl">{displayAmount(yape)}</strong></div>
+        <div className="panel"><p>Efectivo</p><strong className="money text-2xl">{displayAmount(efectivo)}</strong></div>
       </div>
       <div className="grid justify-items-center gap-3 py-2">
-        <button className="primary min-h-[76px] w-4/5 text-xl" onClick={() => onRegister('YAPE')}>+ REGISTRAR YAPE</button>
+        <button className="primary min-h-[76px] w-4/5 text-xl" onClick={() => onRegister('YAPE')}>+ Registra Ingreso</button>
         <button className="secondary w-4/5" onClick={() => onRegister('EFECTIVO')}>+ Efectivo</button>
       </div>
       <h2 className="text-xl font-extrabold">Ventas de hoy</h2>
@@ -159,9 +185,9 @@ function Register({ method, onSave, onBack }) {
   return (
     <>
       <button className="secondary self-start" onClick={onBack} disabled={busy}>← Volver</button>
-      <h1 className="heading">Registrar {labels[method]}</h1>
+      <h1 className="heading">{method === 'YAPE' ? 'Registra Ingreso' : 'Registrar efectivo'}</h1>
       <form className="grid gap-3" onSubmit={submit}>
-        <output className="money rounded-xl bg-[#f5ecf7] p-3 text-right text-4xl font-black text-yape"
+        <output className="money amount-display"
           aria-label="Monto de la venta">S/ {amount || '0'}</output>
         <div className="grid grid-cols-3 gap-2" aria-label="Teclado de monto">
           {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫'].map(key => (
@@ -190,6 +216,7 @@ function Register({ method, onSave, onBack }) {
           </>
         )}
         <button className="primary sticky bottom-2 min-h-[68px] shadow-lg" disabled={!cents || busy}>
+          <ButtonIcon name="Guardar" />
           {saving ? 'Guardando…' : 'GUARDAR'}
         </button>
       </form>
@@ -230,7 +257,7 @@ function Close({ day, close, sales, onClose, onHistory }) {
           <a className="action bg-whatsapp" href={'https://wa.me/?text=' + encodeURIComponent(message)}
             target="_blank" rel="noopener noreferrer">Compartir por WhatsApp</a>
         </>
-      ) : <button className="primary" onClick={finish} disabled={busy}>{busy ? 'Guardando…' : 'CERRAR DÍA'}</button>}
+      ) : <button className="primary" onClick={finish} disabled={busy}><ButtonIcon name="Cierre" />{busy ? 'Guardando…' : 'CERRAR DÍA'}</button>}
       {error && <p role="alert">No se pudo guardar el cierre en el celular.</p>}
       <button className="secondary" onClick={onHistory}>Ver días anteriores</button>
     </>
@@ -266,7 +293,8 @@ function History({ sales, today, selected, onSelect }) {
   );
 }
 
-export default function Caja() {
+export default function Caja({ business = false }) {
+  const [amountsVisible, setAmountsVisible] = useState(false);
   const [profile, setProfile] = useState(undefined);
   const [unlocked, setUnlocked] = useState(false);
   const [startupError, setStartupError] = useState(false);
@@ -277,6 +305,7 @@ export default function Caja() {
   const [selected, setSelected] = useState('');
   const [online, setOnline] = useState(true);
   const [notice, setNotice] = useState('');
+  const [denied, setDenied] = useState(false);
   const revision = useRef(0);
 
   const refresh = useCallback(async () => {
@@ -287,7 +316,9 @@ export default function Caja() {
 
   const sync = useCallback(async () => {
     if (!profile || !navigator.onLine) return;
-    if (await syncLedger(profile.token)) await refresh();
+    const result = await syncLedger(profile.token);
+    if (result === 'denied') setDenied(true);
+    else if (result) await refresh();
   }, [profile, refresh]);
 
   useEffect(() => {
@@ -355,8 +386,14 @@ export default function Caja() {
   }
 
   if (startupError) return <main className="screen"><p role="alert">No se pudo acceder a la caja del celular. Recarga la página.</p></main>;
-  if (profile === undefined) return <main className="screen"><p role="status">Abriendo Cuadra Yape…</p></main>;
-  if (!unlocked) return <Pin profile={profile} onUnlock={unlock} />;
+  if (profile === undefined) return <main className="screen"><p role="status">Abriendo Cuadra Dinero…</p></main>;
+  if (business && (denied || !profile || today < profile.inicio || today > profile.fin)) {
+    return <main className="screen justify-center"><h1 className="heading">Acceso del negocio</h1>
+      <p>Vuelve a ingresar con tus credenciales para verificar la vigencia del servicio.</p>
+      <a className="primary" href="/negocio">Ingresar con usuario</a>
+    </main>;
+  }
+  if (!unlocked) return <Pin profile={profile} onUnlock={unlock} business={business} />;
 
   const sales = ledger.sales.filter(sale => sale.dia === today);
   const close = ledger.closes.find(item => item.dia === today);
@@ -366,13 +403,19 @@ export default function Caja() {
       {screen !== 'Registrar' && (
         <>
           <header className="flex items-center justify-between gap-2">
-            <span className="font-extrabold text-yape">Cuadra Yape</span>
-            <button className="secondary" onClick={() => { navigate('Hoy'); setUnlocked(false); }}>Bloquear</button>
+            <div className="min-w-0 flex-1">
+              <Brand />
+            </div>
+            <button className="secondary" onClick={() => { navigate('Hoy'); setAmountsVisible(false); setUnlocked(false); }}>Bloquear</button>
           </header>
+          {profile.negocio && (
+            <h1 className="business-name">{profile.negocio}</h1>
+          )}
           <nav aria-label="Pantallas de la caja" className="grid grid-cols-3 gap-2">
             {['Hoy', 'Cierre', 'Historial'].map(tab => (
               <button key={tab} aria-current={screen === tab ? 'page' : undefined}
-                className={screen === tab ? 'primary px-1' : 'secondary px-1'} onClick={() => navigate(tab)}>{tab}</button>
+                className={screen === tab ? 'primary px-1 flex-col sm:flex-row' : 'secondary px-1 flex-col sm:flex-row'}
+                onClick={() => navigate(tab)}><ButtonIcon name={tab} />{tab}</button>
             ))}
           </nav>
           {(!online || pending > 0 || notice) && (
@@ -380,7 +423,9 @@ export default function Caja() {
           )}
         </>
       )}
-      {screen === 'Hoy' && <Today sales={sales} onRegister={value => { setMethod(value); navigate('Registrar'); }} />}
+      {screen === 'Hoy' && <Today sales={sales} amountsVisible={amountsVisible}
+        onToggleAmounts={() => setAmountsVisible(visible => !visible)}
+        onRegister={value => { setMethod(value); navigate('Registrar'); }} />}
       {screen === 'Registrar' && <Register method={method} onSave={save} onBack={() => navigate('Hoy')} />}
       {screen === 'Cierre' && <Close day={today} close={close} sales={sales} onClose={closeDay} onHistory={() => navigate('Historial')} />}
       {screen === 'Historial' && <History sales={ledger.sales} today={today} selected={selected} onSelect={setSelected} />}

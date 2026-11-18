@@ -2,6 +2,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Administrador {
+  id         String @id
+  claveHash  String
+  sesionKey  String
+
+  @@map("administradores")
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
@@ -30,4 +38,22 @@ model CierreDia {
 
   @@id([caja, dia])
   @@map("cierre_dia")
+}
+
+model Cliente {
+  id           String   @id
+  negocio      String
+  rubro        String
+  nombre       String
+  apellido     String
+  dni          String
+  correo       String
+  telefono     String
+  inicio       String
+  fin          String
+  usuario      String   @unique
+  claveHash    String
+  creadoEn     DateTime @default(now())
+
+  @@map("clientes")
 }

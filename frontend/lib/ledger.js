@@ -4,7 +4,13 @@ let database;
 let syncing;
 const lima = { timeZone: 'America/Lima' };
 const dayFormat = new Intl.DateTimeFormat('sv-SE', lima);
-const timeFormat = new Intl.DateTimeFormat('es-PE', { ...lima, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+const timeFormat = new Intl.DateTimeFormat('es-PE', {
+  ...lima,
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hourCycle: 'h23',
+});
 
 export const dayOf = (date = new Date()) => dayFormat.format(date);
 export const timeOf = date => timeFormat.format(new Date(date));
@@ -26,14 +32,19 @@ export function totals(sales) {
   return { yape, efectivo, total: yape + efectivo, cantidad: sales.length };
 }
 
-function db() {
-  database ??= openDB('cuadra-yape', 1, {
+function openLedger(businessId) {
+  return openDB(businessId ? 'cuadra-yape-' + businessId : 'cuadra-yape', 1, {
     upgrade(store) {
       store.createObjectStore('ventas', { keyPath: 'id' }).createIndex('pending', 'pending');
       store.createObjectStore('cierres', { keyPath: 'dia' }).createIndex('pending', 'pending');
       store.createObjectStore('ajustes');
     },
   });
+}
+
+function db() {
+  const businessId = location.pathname === '/negocio' ? new URLSearchParams(location.search).get('caja') : null;
+  database ??= openLedger(businessId);
   return database;
 }
 
@@ -82,6 +93,16 @@ export async function verifyPin(pin, profile) {
   return (await pinHash(pin, profile.salt)) === profile.hash;
 }
 
+export async function saveBusinessProfile(pin, business) {
+  const salt = hex(crypto.getRandomValues(new Uint8Array(16)));
+  const store = await openLedger(business.id);
+  try {
+    await store.put('ajustes', { ...business, salt, hash: await pinHash(pin, salt) }, 'perfil');
+  } finally {
+    store.close();
+  }
+}
+
 export function syncLedger(token) {
   syncing ??= sendPending(token).finally(() => { syncing = null; });
   return syncing;
@@ -119,6 +140,24 @@ async function sendPending(token) {
       break;
     }
   }
+  if (!token.includes('.')) return changed;
+  const response = await fetch('/api/negocio/registros', {
+    headers: { Authorization: 'Bearer ' + token }, signal: AbortSignal.timeout(8000), cache: 'no-store',
+  });
+  if (response.status === 401 || response.status === 403) return 'denied';
+  if (!response.ok) return changed;
+  const remote = await response.json();
+  const tx = local.transaction(['ventas', 'cierres'], 'readwrite');
+  for (const [store, records, key] of [['ventas', remote.sales, 'id'], ['cierres', remote.closes, 'dia']]) {
+    const table = tx.objectStore(store);
+    for (const record of records) {
+      if (!(await table.get(record[key]))) {
+        await table.add({ ...record, pending: 0 });
+        changed = true;
+      }
+    }
+  }
+  await tx.done;
   return changed;
 }
 

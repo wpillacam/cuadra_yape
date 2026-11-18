@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import { customerRoutes, requireCaja } from './clientes.js';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -19,12 +20,20 @@ function validDay(day) {
 app.disable('x-powered-by');
 app.use('/api', (req, res, next) => {
   res.set('Cache-Control', 'no-store');
-  const token = /^Bearer ([a-f0-9]{64})$/.exec(req.get('Authorization') || '');
-  if (!token) return res.status(401).json({ error: 'Caja no identificada' });
-  res.locals.caja = createHash('sha256').update(token[1]).digest('hex');
   next();
 });
 app.use(express.json({ limit: '1mb' }));
+app.use('/api', customerRoutes(prisma));
+app.use('/api', requireCaja(prisma, token => createHash('sha256').update(token).digest('hex')));
+
+app.get('/api/negocio/registros', async (_req, res) => {
+  const caja = res.locals.caja;
+  const [sales, closes] = await prisma.$transaction([
+    prisma.venta.findMany({ where: { caja }, select: publicSale }),
+    prisma.cierreDia.findMany({ where: { caja }, select: { dia: true, cerradoEn: true } }),
+  ]);
+  res.json({ sales, closes });
+});
 
 app.post('/api/ventas', async (req, res) => {
   const { id, fecha, metodo, montoCentimos, descripcion, nota, foto } = req.body || {};

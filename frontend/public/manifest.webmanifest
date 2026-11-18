@@ -1,13 +1,13 @@
 {
   "id": "/",
-  "name": "Cuadra Yape",
-  "short_name": "Cuadra Yape",
+  "name": "Cuadra Dinero",
+  "short_name": "Cuadra Dinero",
   "lang": "es-PE",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#07132e",
+  "theme_color": "#07132e",
   "icons": [
     {
       "src": "/icon-192.png",

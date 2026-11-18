@@ -3,7 +3,12 @@
 @tailwind utilities;
 
 @layer base {
-  body { @apply bg-white text-black text-lg leading-snug; }
+  body {
+    @apply text-lg leading-snug;
+    color: #edf5ff;
+    background: #07132e;
+    font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  }
   button, a, input { touch-action: manipulation; }
   button:focus-visible, a:focus-visible, input:focus-visible {
     @apply outline outline-2 outline-offset-2 outline-yape;
@@ -12,14 +17,63 @@
 
 @layer components {
   .action {
-    @apply inline-flex min-h-[60px] items-center justify-center rounded-xl px-4 py-2 text-center text-lg font-bold disabled:opacity-50;
+    @apply inline-flex min-h-[60px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-center text-lg font-bold disabled:opacity-50;
   }
-  .primary { @apply action bg-yape text-white; }
-  .secondary { @apply action bg-zinc-100 text-black; }
-  .field { @apply min-h-[60px] w-full min-w-0 rounded-xl border border-zinc-400 bg-white px-3 text-lg; }
-  .panel { @apply rounded-2xl border border-zinc-200 bg-zinc-50 p-4; }
+  .primary { @apply action text-white; background: linear-gradient(125deg, #473a9c, #302075); box-shadow: 0 5px 20px #35228755; }
+  .secondary { @apply action text-[#e3edff]; background: #ffffff0d; border: 1px solid #8fb7d14d; }
+  .field { @apply min-h-[60px] w-full min-w-0 rounded-xl border border-[#83a8c466] bg-[#0b1c34aa] px-3 text-lg text-white; color-scheme: dark; }
+  .panel { @apply rounded-2xl border border-[#9bc4dc55] p-4; background: linear-gradient(130deg, #b4eeee1c, #afa3e615); backdrop-filter: blur(16px); }
   .screen { @apply mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-4 py-4; }
   .heading { @apply text-3xl font-extrabold leading-tight; }
+  .total-today {
+    @apply rounded-2xl p-5 text-white;
+    background: radial-gradient(ellipse at 110% -25%, #4a7ba688, transparent 65%), linear-gradient(115deg, #13596399, #44346788);
+  }
+  .amount-display { @apply rounded-xl p-3 text-right text-4xl font-black text-white; background: #a6d6f01c; border: 1px solid #9bc4dc55; }
 }
 
 .money { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+
+.business-name {
+  border-left: 4px solid #8de6da;
+  border-radius: 0 14px 14px 0;
+  background: linear-gradient(110deg, #48c9b62b, #a899e91a);
+  padding: 14px 16px;
+  color: #ffffff;
+  font-size: clamp(24px, 6vw, 30px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+}
+
+body {
+  background-image: radial-gradient(ellipse at 26% 18%, #00695866, transparent 46%), radial-gradient(ellipse at 74% 2%, #58387455, transparent 45%), radial-gradient(ellipse at 95% 45%, #006d7466, transparent 48%);
+  background-attachment: fixed;
+}
+
+.brand-logo {
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 2.05;
+  overflow: hidden;
+  border-radius: 14px;
+  position: relative;
+  background: #c4e0ef;
+}
+
+.brand-logo img {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  top: -101%;
+}
+
+.cy-sidebar .brand-logo {
+  margin-bottom: 18px;
+}
+
+header .brand-logo {
+  max-width: 180px;
+}

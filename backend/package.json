@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "admin:clave": "node src/configure-admin.js",
     "db:setup": "prisma generate && prisma migrate deploy",
     "db:postgres": "npm run db:postgres:generate && npm run db:postgres:migrate",
     "db:postgres:generate": "prisma generate --schema prisma/postgresql/schema.prisma",

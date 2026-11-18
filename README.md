@@ -92,6 +92,15 @@ El desarrollo local usa el schema de SQLite. Las migraciones de PostgreSQL está
 3. En **Settings → Deploy**, usa `/` como **Healthcheck Path**. La imagen se compila sin acceso a la base. Al arrancar, el contenedor aplica las migraciones y solo entonces inicia la app.
 4. En **Networking → Public Networking**, genera un dominio HTTPS. Abre el dominio y prueba una venta desde el celular.
 
+## Panel de administración
+
+1. Aplica las migraciones con `npm run db:setup` en local. En Railway se aplican al arrancar el contenedor.
+2. Configura o restablece la clave pasando el valor por entrada estándar a `npm run admin:clave -w backend`. El script guarda un hash scrypt con sal aleatoria en la tabla `administradores` e invalida las sesiones administrativas anteriores. La clave debe tener entre 8 y 128 caracteres. El acceso permanece cerrado hasta configurar el registro.
+3. Abre `/admin`. Crea el cliente con sus datos, fechas de servicio y nombre de usuario. Copia la clave que genera el panel y entrégala al titular junto con el enlace `/negocio`.
+4. El titular inicia sesión con conexión y elige un PIN para el dispositivo. Después puede abrir su caja con ese PIN sin conexión. La API comprueba la vigencia con la fecha de Perú. Si se restablece la clave o se acorta el servicio, un equipo que siga sin conexión conserva el acceso local hasta reconectar o alcanzar su fecha de vencimiento guardada.
+
+Cada negocio tiene su propia caja en el servidor y en el navegador. Las ventas y cierres sincronizados se consultan desde otro dispositivo de la misma cuenta. Las fotos se muestran en el dispositivo que las tomó. Los perfiles PIN creados en la pantalla principal conservan su caja local independiente.
+
 ## Datos y alcance
 
 - Cada instalación funciona como una caja independiente. La app usa su historial local y envía los registros pendientes con la app abierta y desbloqueada. El servidor conserva los datos sincronizados. Esta versión carece de restauración automática en otro teléfono. Al borrar los datos del sitio se pierden el PIN, el identificador de caja y las ventas pendientes.
